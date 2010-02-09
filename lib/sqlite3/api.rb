@@ -199,5 +199,14 @@ module SQLite3
     rescue ::FFI::NotFoundError
       EXTENSION_SUPPORT = false
     end
+    
+    begin
+      attach_function :spatialite_init, [:int], :int
+      self.spatialite_init(1)
+      
+      SPATIALITE_SUPPORT = true
+    rescue ::FFI::NotFoundError
+      SPATIALITE_SUPPORT = false
+    end
   end
 end
