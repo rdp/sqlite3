@@ -13,6 +13,12 @@ tmtags
 ## VIM
 *.swp
 
+## RubyMine
+.idea
+
+## NetBeans
+nbproject
+
 ## PROJECT::GENERAL
 coverage
 rdoc
@@ -20,3 +26,5 @@ pkg
 
 ## PROJECT::SPECIFIC
 *.gem
+
+
