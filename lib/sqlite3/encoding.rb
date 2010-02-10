@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module SQLite3
   class Encoding
     class << self

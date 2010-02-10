@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require "ffi"
 
 require "sqlite3/api"

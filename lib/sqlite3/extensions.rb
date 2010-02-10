@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module SQLite3
   module Extensions
     def enable_load_extension(onoff=true)

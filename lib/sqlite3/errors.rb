@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module SQLite3
 
   class Exception < ::StandardError
@@ -14,45 +16,45 @@ module SQLite3
     end
   end
 
-  class SQLException < Exception; end
-  class InternalException < Exception; end
-  class PermissionException < Exception; end
-  class AbortException < Exception; end
-  class BusyException < Exception; end
-  class LockedException < Exception; end
-  class MemoryException < Exception; end
-  class ReadOnlyException < Exception; end
-  class InterruptException < Exception; end
-  class IOException < Exception; end
-  class CorruptException < Exception; end
-  class NotFoundException < Exception; end
-  class FullException < Exception; end
-  class CantOpenException < Exception; end
-  class ProtocolException < Exception; end
-  class EmptyException < Exception; end
-  class SchemaChangedException < Exception; end
-  class TooBigException < Exception; end
-  class ConstraintException < Exception; end
-  class MismatchException < Exception; end
-  class MisuseException < Exception; end
-  class UnsupportedException < Exception; end
-  class AuthorizationException < Exception; end
-  class FormatException < Exception; end
-  class RangeException < Exception; end
-  class NotADatabaseException < Exception; end
+  SQLException                = Class.new(Exception)
+  InternalException           = Class.new(Exception)
+  PermissionException         = Class.new(Exception)
+  AbortException              = Class.new(Exception)
+  BusyException               = Class.new(Exception)
+  LockedException             = Class.new(Exception)
+  MemoryException             = Class.new(Exception)
+  ReadOnlyException           = Class.new(Exception)
+  InterruptException          = Class.new(Exception)
+  IOException                 = Class.new(Exception)
+  CorruptException            = Class.new(Exception)
+  NotFoundException           = Class.new(Exception)
+  FullException               = Class.new(Exception)
+  CantOpenException           = Class.new(Exception)
+  ProtocolException           = Class.new(Exception)
+  EmptyException              = Class.new(Exception)
+  SchemaChangedException      = Class.new(Exception)
+  TooBigException             = Class.new(Exception)
+  ConstraintException         = Class.new(Exception)
+  MismatchException           = Class.new(Exception)
+  MisuseException             = Class.new(Exception)
+  UnsupportedException        = Class.new(Exception)
+  AuthorizationException      = Class.new(Exception)
+  FormatException             = Class.new(Exception)
+  RangeException              = Class.new(Exception)
+  NotADatabaseException       = Class.new(Exception)
 
   EXCEPTIONS =
-    [
-     nil, SQLException, InternalException,
-     PermissionException, AbortException, BusyException,
-     LockedException, MemoryException, ReadOnlyException,
-     InterruptException, IOException, CorruptException,
-     NotFoundException, FullException, CantOpenException,
-     ProtocolException, EmptyException, SchemaChangedException,
-     TooBigException, ConstraintException, MismatchException,
-     MisuseException, UnsupportedException, AuthorizationException,
-     FormatException, RangeException, NotADatabaseException
-    ].each_with_index { |e,i| e.instance_variable_set(:@code, i ) if e }
+          [
+                  nil, SQLException, InternalException,
+                  PermissionException, AbortException, BusyException,
+                  LockedException, MemoryException, ReadOnlyException,
+                  InterruptException, IOException, CorruptException,
+                  NotFoundException, FullException, CantOpenException,
+                  ProtocolException, EmptyException, SchemaChangedException,
+                  TooBigException, ConstraintException, MismatchException,
+                  MisuseException, UnsupportedException, AuthorizationException,
+                  FormatException, RangeException, NotADatabaseException
+          ].each_with_index { |e, i| e.instance_variable_set(:@code, i ) if e }
 
   module Error
     def check( result, db=nil, msg=nil )
@@ -61,6 +63,7 @@ module SQLite3
         raise(( EXCEPTIONS[result] || SQLite3::Exception ), msg)
       end
     end
+
     module_function :check
   end
 

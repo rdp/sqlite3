@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module SQLite3
 
   # The ResultSet object encapsulates the enumerability of a query's output.
@@ -46,6 +48,7 @@ module SQLite3
       check result
       @first_row = true
     end
+
     private :commence
 
     def check(result)
@@ -53,6 +56,7 @@ module SQLite3
       found = (result == Constants::ErrorCode::ROW)
       Error.check(result, @db) unless @eof || found
     end
+
     private :check
 
     # Reset the cursor, so that a result set which has reached end-of-file
@@ -122,7 +126,7 @@ module SQLite3
 
         if @db.results_as_hash
           new_row = HashWithTypes[ *(@stmt.columns.zip(row).to_a.flatten) ]
-          row.each_with_index { |value,idx| new_row[idx] = value }
+          row.each_with_index { |value, idx| new_row[idx] = value }
           row = new_row
         else
           if row.respond_to?(:fields)

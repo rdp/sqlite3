@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module SQLite3
 
   # This module is intended for inclusion solely by the Database class. It
@@ -40,7 +42,7 @@ module SQLite3
       parts = [v1.length, v2.length].max
       v1.push 0 while v1.length < parts
       v2.push 0 while v2.length < parts
-      v1.zip(v2).each do |a,b|
+      v1.zip(v2).each do |a, b|
         return -1 if a < b
         return  1 if a > b
       end
@@ -52,12 +54,12 @@ module SQLite3
     # unquotes those values.
     def tweak_default(hash)
       case hash["dflt_value"]
-      when /^null$/i
-        hash["dflt_value"] = nil
-      when /^'(.*)'$/
-        hash["dflt_value"] = $1.gsub(/''/, "'")
-      when /^"(.*)"$/
-        hash["dflt_value"] = $1.gsub(/""/, '"')
+        when /^null$/i
+          hash["dflt_value"] = nil
+        when /^'(.*)'$/
+          hash["dflt_value"] = $1.gsub(/''/, "'")
+        when /^"(.*)"$/
+          hash["dflt_value"] = $1.gsub(/""/, '"')
       end
     end
   end

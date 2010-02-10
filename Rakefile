@@ -16,7 +16,7 @@ begin
     gem.add_development_dependency "test-unit", ">= 2.0"
     gem.add_development_dependency "activerecord", ">= 2.3.5"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-    gem.post_install_message = <<-EOM
+    gem.post_install_message = <<EOM
 ==== WARNING ===================================================================
 This is an early alpha version of SQLite3/Ruby FFI bindings!
 Currently we support Ruby 1.9 ONLY.

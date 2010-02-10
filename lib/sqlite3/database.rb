@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module SQLite3
 
   # The Database class encapsulates a single connection to a SQLite3 database.
@@ -39,7 +41,7 @@ module SQLite3
       # It replaces all instances of the single-quote character with two
       # single-quote characters. The modified string is returned.
       def quote(string)
-        string.gsub(/'/, "''")
+        "#{string}".gsub(/'/, "''")
       end
 
     end
@@ -168,7 +170,7 @@ module SQLite3
           yield result.columns
           result.each { |row| yield row }
         else
-          return result.inject([result.columns]) { |arr,row| arr << row; arr }
+          return result.inject([result.columns]) { |arr, row| arr << row; arr }
         end
       end
     end

@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module SQLite3
 
   # A statement represents a prepared-but-unexecuted SQL query. It will rarely
@@ -76,20 +78,20 @@ module SQLite3
       reset! if active?
       if Fixnum === param
         case value
-        when Bignum then
-          @driver.bind_int64(@handle, param, value)
-        when Integer then
-          if value >= (2 ** 31)
+          when Bignum then
             @driver.bind_int64(@handle, param, value)
+          when Integer then
+            if value >= (2 ** 31)
+              @driver.bind_int64(@handle, param, value)
+            else
+              @driver.bind_int(@handle, param, value)
+            end
+          when Numeric then
+            @driver.bind_double(@handle, param, value.to_f)
+          when nil then
+            @driver.bind_null(@handle, param)
           else
-            @driver.bind_int(@handle, param, value)
-          end
-        when Numeric then
-          @driver.bind_double(@handle, param, value.to_f)
-        when nil then
-          @driver.bind_null(@handle, param)
-        else
-          @driver.bind_string(@handle, param, value.to_s)
+            @driver.bind_string(@handle, param, value.to_s)
         end
       else
         param = param.to_s
@@ -199,6 +201,7 @@ module SQLite3
         @types << @driver.column_decltype(@handle, column)
       end
     end
+
     private :get_metadata
 
     # Performs a sanity check to ensure that the statement is not

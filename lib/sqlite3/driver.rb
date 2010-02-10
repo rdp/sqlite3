@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 module SQLite3
   class Driver
     TRANSIENT = FFI::Pointer.new(-1)
@@ -41,13 +43,13 @@ module SQLite3
 
     def bind_string(stmt, index, value)
       case value.encoding
-      when Encoding.utf_8, Encoding.us_ascii
-        API.sqlite3_bind_text(stmt, index, value, value.bytesize, TRANSIENT)
-      when Encoding.utf_16le, Encoding.utf_16be
-        value = add_byte_order_mask(value)
-        API.sqlite3_bind_text16(stmt, index, value, value.bytesize, TRANSIENT)
-      else
-        API.sqlite3_bind_blob(stmt, index, value, value.bytesize, TRANSIENT)
+        when Encoding.utf_8, Encoding.us_ascii
+          API.sqlite3_bind_text(stmt, index, value, value.bytesize, TRANSIENT)
+        when Encoding.utf_16le, Encoding.utf_16be
+          value = add_byte_order_mask(value)
+          API.sqlite3_bind_text16(stmt, index, value, value.bytesize, TRANSIENT)
+        else
+          API.sqlite3_bind_blob(stmt, index, value, value.bytesize, TRANSIENT)
       end
     end
 
