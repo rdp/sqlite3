@@ -30,22 +30,22 @@ class TestDatabaseInitialization < Test::Unit::TestCase
     File.delete(db_filename) if File.exists?(db_filename)
     db = SQLite3::Database.new(db_filename, :encoding => "utf-16le")
     db.execute("CREATE TABLE t1(t TEXT)")
-    db.execute("INSERT INTO t1 VALUES (?)", expected_string.encode(Encoding::UTF_8))
-    db.execute("INSERT INTO t1 VALUES (?)", expected_string.encode(Encoding::UTF_16LE))
+    db.execute("INSERT INTO t1 VALUES (?)", expected_string)
+    db.execute("INSERT INTO t1 VALUES (?)", expected_string)
     rows = db.execute("SELECT * FROM t1")
     assert_equal 2, rows.size
-    assert_equal expected_string.encode(Encoding::UTF_16LE), rows[0][0]
-    assert_equal Encoding::UTF_16LE, rows[0][0].encoding
-    assert_equal expected_string.encode(Encoding::UTF_16LE), rows[1][0]
-    assert_equal Encoding::UTF_16LE, rows[1][0].encoding
+    assert_equal expected_string, rows[0][0]
+    assert_equal Encoding::UTF_16LE, rows[0][0].encoding if RUBY_VERSION >= '1.9.1'
+    assert_equal expected_string, rows[1][0]
+    assert_equal Encoding::UTF_16LE, rows[1][0].encoding if RUBY_VERSION >= '1.9.1'
     db.close
     db = SQLite3::Database.new(db_filename)
     rows = db.execute("SELECT * FROM t1")
     assert_equal 2, rows.size
     assert_equal expected_string, rows[0][0]
-    assert_equal Encoding::UTF_8, rows[0][0].encoding
+    assert_equal Encoding::UTF_8, rows[0][0].encoding if RUBY_VERSION >= '1.9.1'
     assert_equal expected_string, rows[1][0]
-    assert_equal Encoding::UTF_8, rows[1][0].encoding
+    assert_equal Encoding::UTF_8, rows[1][0].encoding if RUBY_VERSION >= '1.9.1'
     File.delete(db_filename) if File.exists?(db_filename)
   end
 end

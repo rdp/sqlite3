@@ -20,7 +20,7 @@ class TestDatabaseQueriesUtf8 < Test::Unit::TestCase
     assert_equal 1, rows.size
     row = rows[0]
     assert_equal "text1", row[1]
-    assert_equal Encoding::UTF_8, row[1].encoding
+    assert_equal Encoding::UTF_8, row[1].encoding if RUBY_VERSION >= '1.9.1'
     assert_equal 1.22, row[2]
     assert_equal 42, row[3]
     assert_equal 4294967296, row[4]
@@ -34,30 +34,32 @@ class TestDatabaseQueriesUtf8 < Test::Unit::TestCase
     assert_equal 1, rows.size
     row = rows[0]
     assert_equal "text1", row[1]
-    assert_equal Encoding::UTF_8, row[1].encoding
+    assert_equal Encoding::UTF_8, row[1].encoding if RUBY_VERSION >= '1.9.1'
     assert_equal 1.22, row[2]
     assert_equal 42, row[3]
     assert_equal 4294967296, row[4]
     assert_equal blob, row[5]
-    assert_equal Encoding::ASCII_8BIT, row[5].encoding
+    assert_equal Encoding::ASCII_8BIT, row[5].encoding if RUBY_VERSION >= '1.9.1'
   end
-
-  def test_execute_with_different_encodings
-    expected_string = "text1"
-    @db.execute("INSERT INTO t1 VALUES(NULL, ?, NULL, NULL, NULL, NULL)", expected_string.encode(Encoding::ASCII_8BIT))
-    @db.execute("INSERT INTO t1 VALUES(NULL, ?, NULL, NULL, NULL, NULL)", expected_string.encode(Encoding::UTF_8))
-    @db.execute("INSERT INTO t1 VALUES(NULL, ?, NULL, NULL, NULL, NULL)", expected_string.encode(Encoding::UTF_16LE))
-    @db.execute("INSERT INTO t1 VALUES(NULL, ?, NULL, NULL, NULL, NULL)", expected_string.encode(Encoding::UTF_16BE))
-    rows = @db.execute("SELECT * FROM t1")
-    assert_equal 4, rows.size
-    assert_equal expected_string, rows[0][1]
-    assert_equal expected_string, rows[1][1]
-    assert_equal expected_string, rows[2][1]
-    assert_equal expected_string, rows[3][1]
-    assert_equal Encoding::ASCII_8BIT, rows[0][1].encoding
-    assert_equal Encoding::UTF_8, rows[1][1].encoding
-    assert_equal Encoding::UTF_8, rows[2][1].encoding
-    assert_equal Encoding::UTF_8, rows[3][1].encoding
+  
+  if RUBY_VERSION >= '1.9.1'
+    def test_execute_with_different_encodings
+      expected_string = "text1"
+      @db.execute("INSERT INTO t1 VALUES(NULL, ?, NULL, NULL, NULL, NULL)", expected_string.encode(Encoding::ASCII_8BIT))
+      @db.execute("INSERT INTO t1 VALUES(NULL, ?, NULL, NULL, NULL, NULL)", expected_string.encode(Encoding::UTF_8))
+      @db.execute("INSERT INTO t1 VALUES(NULL, ?, NULL, NULL, NULL, NULL)", expected_string.encode(Encoding::UTF_16LE))
+      @db.execute("INSERT INTO t1 VALUES(NULL, ?, NULL, NULL, NULL, NULL)", expected_string.encode(Encoding::UTF_16BE))
+      rows = @db.execute("SELECT * FROM t1")
+      assert_equal 4, rows.size
+      assert_equal expected_string, rows[0][1]
+      assert_equal expected_string, rows[1][1]
+      assert_equal expected_string, rows[2][1]
+      assert_equal expected_string, rows[3][1]
+      assert_equal Encoding::ASCII_8BIT, rows[0][1].encoding
+      assert_equal Encoding::UTF_8, rows[1][1].encoding
+      assert_equal Encoding::UTF_8, rows[2][1].encoding
+      assert_equal Encoding::UTF_8, rows[3][1].encoding
+    end
   end
 
   def test_execute_with_bad_query

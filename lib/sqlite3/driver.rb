@@ -10,7 +10,7 @@ module SQLite3
         filename = filename.encode(Encoding.utf_16native)
         result = API.sqlite3_open16(c_string(filename), handle)
       else
-        filename = filename.encode(Encoding.utf_8)
+        filename = filename.encode(Encoding.utf_8) if RUBY_VERSION >= '1.9.1'
         result = API.sqlite3_open(filename, handle)
       end
       [result, handle.get_pointer(0)]
@@ -21,7 +21,11 @@ module SQLite3
         ptr = API.sqlite3_errmsg16(db)
         get_string_utf_16(ptr).force_encoding(Encoding.utf_16native)
       else
-        API.sqlite3_errmsg(db).force_encoding(Encoding.utf_8)
+        if RUBY_VERSION >= '1.9.1'
+          API.sqlite3_errmsg(db).force_encoding(Encoding.utf_8)
+        else
+          API.sqlite3_errmsg(db)
+        end
       end
     end
 
@@ -42,7 +46,8 @@ module SQLite3
     end
 
     def bind_string(stmt, index, value)
-      case value.encoding
+      if RUBY_VERSION >= '1.9.1'
+        case value.encoding
         when Encoding.utf_8, Encoding.us_ascii
           API.sqlite3_bind_text(stmt, index, value, value.bytesize, TRANSIENT)
         when Encoding.utf_16le, Encoding.utf_16be
@@ -50,6 +55,9 @@ module SQLite3
           API.sqlite3_bind_text16(stmt, index, value, value.bytesize, TRANSIENT)
         else
           API.sqlite3_bind_blob(stmt, index, value, value.bytesize, TRANSIENT)
+        end
+      else
+        API.sqlite3_bind_blob(stmt, index, value, value.bytesize, TRANSIENT)
       end
     end
 
@@ -65,7 +73,11 @@ module SQLite3
         length = API.sqlite3_column_bytes16(stmt, column)
         ptr.get_bytes(0, length).force_encoding(Encoding.utf_16native) # free?
       else
-        API.sqlite3_column_text(stmt, column).force_encoding(Encoding.utf_8)
+        if RUBY_VERSION >= '1.9.1'
+          API.sqlite3_column_text(stmt, column).force_encoding(Encoding.utf_8)
+        else
+          API.sqlite3_column_text(stmt, column)
+        end
       end
     end
 
@@ -120,11 +132,16 @@ module SQLite3
     end
 
     def add_byte_order_mask(string)
-      "\uFEFF".encode(string.encoding) + string
+      if RUBY_VERSION >= '1.9.1'
+        "\uFEFF".encode(string.encoding) + string
+      else
+        "\uFEFF" + string
+      end
     end
 
     def terminate_string!(string)
-      string << "\0\0".force_encoding(string.encoding)
+      string << "\0\0"
+      RUBY_VERSION >= '1.9.1' ? string.force_encoding(string.encoding) : string
     end
 
     def get_string_utf_16(ptr)

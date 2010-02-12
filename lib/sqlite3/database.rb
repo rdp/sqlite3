@@ -65,7 +65,11 @@ module SQLite3
     # By default, the new database will return result rows as arrays
     # (#results_as_hash) and has type translation disabled (#type_translation=).
     def initialize(file_name, options = {})
-      @encoding = Encoding.find(options.fetch(:encoding, "utf-8"))
+      if RUBY_VERSION >= '1.9.1'
+        @encoding = Encoding.find(options.fetch(:encoding, "utf-8"))
+      else
+        @encoding = nil
+      end
 
       @driver = Driver.new
 

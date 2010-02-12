@@ -17,8 +17,12 @@ module SQLite3
       end
 
       def utf_16?(str_or_enc)
-        enc = str_or_enc.kind_of?(::Encoding) ? str_or_enc : str_or_enc.encoding
-        [utf_16le, utf_16be].include?(enc)
+        if RUBY_VERSION >= '1.9.1'
+          enc = str_or_enc.kind_of?(::Encoding) ? str_or_enc : str_or_enc.encoding
+          [utf_16le, utf_16be].include?(enc)
+        else
+          false
+        end
       end
 
       def utf_16native
