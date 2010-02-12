@@ -140,8 +140,11 @@ module SQLite3
     end
 
     def terminate_string!(string)
-      string << "\0\0"
-      RUBY_VERSION >= '1.9.1' ? string.force_encoding(string.encoding) : string
+      if RUBY_VERSION >= '1.9.1'
+        string << "\0\0".force_encoding(string.encoding)
+      else
+        string << "\0\0"
+      end
     end
 
     def get_string_utf_16(ptr)
