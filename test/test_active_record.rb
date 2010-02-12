@@ -12,6 +12,7 @@ class CreateUsers < ActiveRecord::Migration
       t.boolean :active
       t.datetime :expires_at
       t.text :about_me
+      t.string :test_hash
       t.timestamps
     end
   end
@@ -21,7 +22,9 @@ class CreateUsers < ActiveRecord::Migration
   end
 end
 
-class User < ActiveRecord::Base; end
+class User < ActiveRecord::Base;
+  serialize :test_hash
+end
 
 class TestActiveRecord < Test::Unit::TestCase
   def setup
@@ -154,5 +157,27 @@ class TestActiveRecord < Test::Unit::TestCase
     user.avatar = avatar
     user.reload
     assert_equal 1, User.count
+  end
+  
+  def test_serialized_attributes
+    hash = { :array      => [1,2,3],
+             :bool       => true,
+             :float      => 1.0,
+             :int        => 1,
+             :other_user => User.new(:login => 'login'),
+             :sub_hash   => { :bool  => true,
+                              :int   => 1,
+                              :float => 1.0 }}
+    user = User.create!(:test_hash => hash)
+    user.reload
+    
+    # test equality
+    hash.each_key do |k|
+      if hash[k].kind_of?(ActiveRecord::Base)
+        assert_equal hash[k].attributes, user.test_hash[k].attributes
+      else
+        assert_equal hash[k], user.test_hash[k]
+      end
+    end
   end
 end
