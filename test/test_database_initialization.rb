@@ -8,6 +8,7 @@ class TestDatabaseInitialization < Test::Unit::TestCase
   end
 
   def teardown
+    @db.close
     File.delete(@db_filename) if File.exists?(@db_filename)
   end
 
@@ -60,6 +61,7 @@ class TestDatabaseInitialization < Test::Unit::TestCase
     assert_equal Encoding::UTF_8, rows[0][0].encoding if RUBY_VERSION >= '1.9.1'
     assert_equal expected_string, rows[1][0]
     assert_equal Encoding::UTF_8, rows[1][0].encoding if RUBY_VERSION >= '1.9.1'
+    db.close
     File.delete(db_filename) if File.exists?(db_filename)
   end
 end
